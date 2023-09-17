@@ -25,7 +25,7 @@ $testList = $tests->getTestList();
         <br>
         <select name="test" required>
             <?php foreach($testList as $test): ?>
-                <option id="<?= $test['id']; ?>"><?= $test['title']; ?></option>
+                <option value="<?= $test['id']; ?>"><?= $test['title']; ?></option>
             <?php endforeach; ?>
         </select>
         <input type="submit" value="Sākt testu">

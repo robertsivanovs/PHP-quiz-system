@@ -8,11 +8,13 @@ class UserController {
         
     /**
      * processUserData
+     * 
+     * Saves the user data to DB
      *
      * @param  mixed $username
      * @return bool
      */
-    public function processUserData($username = null) {
+    public function processUserData($username = null): bool {
 
         if (!$username) {
             return false;

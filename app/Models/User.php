@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use app\Classes\Database;
 
 /**
@@ -12,12 +14,13 @@ class User extends Database
     /**
      * createUser
      * 
+     * Saves the user data to DB
      *
      * @param  String $username
      *
-     * @return void
+     * @return bool
      */
-    public function createUser($username)
+    public function createUser(string $username): bool
     {
         try {
             $sql = "INSERT INTO users (username) VALUES (:username)";

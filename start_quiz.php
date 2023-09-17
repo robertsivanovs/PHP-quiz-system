@@ -9,6 +9,7 @@ require_once './app/Controllers/UserController.php';
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Retrieve form data
     $username = $_POST["username"];
+    $userTest = $_POST["test"];
 
     // Instantiate the class
     $user = new UserController();
@@ -18,7 +19,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Redirect or display a success message based on the result
     if ($result) {
-        header("Location: success.php");
+        session_start();
+
+        // Save session variables
+        $_SESSION["username"] = $username;
+        $_SESSION["user_test"] = $userTest;
+        $_SESSION['current_question'] = 1;
+
+        header("Location: quiz.php");
         exit;
     } else {
         // Handle errors or display an error message
