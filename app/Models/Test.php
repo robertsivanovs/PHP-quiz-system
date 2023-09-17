@@ -75,6 +75,7 @@ class Test extends Database
                 if (!$questionData) {
                     $questionData = [
                         'question_text' => $row['question_text'],
+                        'question_id' => $row['question_id'],
                         'answers' => []
                     ];
                 }
@@ -92,6 +93,32 @@ class Test extends Database
         }
     
         return null;
+    }
+
+    public function saveQuestionAnswer($userID = null, $questionID = null, $answerID = null) {
+
+        if (!$userID || !$questionID || !$answerID) {
+            return 0;
+        }
+
+        try {
+            $sql = "INSERT INTO user_responses (user_id, question_id, selected_answer_id) VALUES (:user_id, :question_id, :answer_id)";
+            $stmt = $this->con->prepare($sql);
+            $stmt->bindValue(':user_id', $userID);
+            $stmt->bindValue(':question_id', $questionID);
+            $stmt->bindValue(':answer_id', $answerID);
+            $result = $stmt->execute();
+
+            if ($result) {
+                // Return the ID of the newly created record
+                return $this->con->lastInsertId();
+            } else {
+                return 0; // Failed to insert the user
+            }
+        } catch (PDOException $e) {
+            return $e->getMessage();
+        }
+
     }
 
 }

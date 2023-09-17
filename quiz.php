@@ -1,5 +1,7 @@
 <?php
 
+require_once './app/Controllers/TestController.php';
+
 ini_set('display_errors', 1); 
 ini_set('display_startup_errors', 1); 
 error_reporting(E_ALL);
@@ -10,6 +12,7 @@ session_start();
 $sessionVariables = [
     'username',
     'user_test',
+    'user_id',
     'current_question'
 ];
 
@@ -21,19 +24,26 @@ foreach ($sessionVariables as $variable) {
     }
 }
 
+$tests = new TestController;
+$userName = $_SESSION["username"];
+$userTest = $_SESSION["user_test"];
+$userID = $_SESSION['user_id'];
+$currentQuestion = $_SESSION['current_question'];
+
+// This happens when procceeding to the next question
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    var_dump($_SESSION);
-    die();
+    
+    $questionID = $_SESSION['question_id'];
+    $answerID = $_POST['answer'];
+    $result = $tests->saveUserResponses($userID, $questionID, $answerID);
+
+    if ($result) {
+        $currentQuestion++;
+        $_SESSION['current_question'] = $currentQuestion;
+    }
 
 }
 
-$userName = $_SESSION["username"];
-$userTest = $_SESSION["user_test"];
-$currentQuestion = $_SESSION['current_question'];
-
-
-require_once './app/Controllers/TestController.php';
-$tests = new TestController;
 $questionData = $tests->getTestData($userTest, $currentQuestion);
 
 if (!$questionData) {
@@ -41,6 +51,7 @@ if (!$questionData) {
     exit;
 }
 
+$_SESSION["question_id"] = $questionData['question_id'];
 $questionTitle = $questionData['question_text'];
 
 ?>

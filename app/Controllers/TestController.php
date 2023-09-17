@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 require_once './app/Models/Test.php';
 
 class TestController {
@@ -40,6 +39,22 @@ class TestController {
         }
 
         $this->testModel = new Test;
-        return $data = $this->testModel->getTestData($userTest, $questionPosition);
+
+        if ($this->testModel->getTestData($userTest, $questionPosition)) {
+            return $data = $this->testModel->getTestData($userTest, $questionPosition);
+        }
+        
+        return $data;
+    }
+
+    public function saveUserResponses($userID = null, $questionID = null, $answerID = null) {
+
+        if (!$userID || !$questionID || !$answerID) {
+            return 0;
+        }
+
+        $this->testModel = new Test;
+        return $this->testModel->saveQuestionAnswer($userID, $questionID, $answerID);
+
     }
 }

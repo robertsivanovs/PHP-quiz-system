@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 require_once './app/Models/User.php';
 
 class UserController {
@@ -12,16 +14,16 @@ class UserController {
      * Saves the user data to DB
      *
      * @param  mixed $username
-     * @return bool
+     * @return int
      */
-    public function processUserData($username = null): bool {
+    public function processUserData($username = null): int {
 
         if (!$username) {
-            return false;
+            return 0;
         }
 
         $this->userModel = new User();
-        return $this->userModel->createUser($username);
+        return (int)$this->userModel->createUser($username);
 
     }
 }

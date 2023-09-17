@@ -20,17 +20,21 @@ class User extends Database
      *
      * @return bool
      */
-    public function createUser(string $username): bool
-    {
+    public function createUser(string $username) {
         try {
             $sql = "INSERT INTO users (username) VALUES (:username)";
             $stmt = $this->con->prepare($sql);
             $stmt->bindValue(':username', $username);
             $result = $stmt->execute();
+
+            if ($result) {
+                // Return the ID of the newly created record
+                return $this->con->lastInsertId();
+            } else {
+                return false; // Failed to insert the user
+            }
         } catch (PDOException $e) {
             return $e->getMessage();
         }
-
-        return $result;
     }
 }

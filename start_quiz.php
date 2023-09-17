@@ -25,6 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION["username"] = $username;
         $_SESSION["user_test"] = $userTest;
         $_SESSION['current_question'] = 1;
+        $_SESSION['user_id'] = $result; // Result is user_id or 0
 
         header("Location: quiz.php");
         exit;
