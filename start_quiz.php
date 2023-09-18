@@ -1,9 +1,4 @@
 <?php
-
-ini_set('display_errors', 1); 
-ini_set('display_startup_errors', 1); 
-error_reporting(E_ALL);
-
 require_once './app/Controllers/UserController.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -11,13 +6,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST["username"];
     $userTest = $_POST["test"];
 
-    // Instantiate the class
+    // Only way this can occur is by tinkering with form HTML manually
+    if (!$username || !$userTest) {
+        header("Location: index.php");
+        exit;
+    }
+
+    $username = trim($username);
+    $userTest = trim($userTest);
+
+    // Remove all symbols except alphanumeric characters and whitespace
+    $username = preg_replace("/[^a-zA-Z0-9\s]/", "", $username);
+
+    // Remove all symbols except numeric characters
+    $userTest = preg_replace("/[^0-9]/", "", $userTest);
+
     $user = new UserController();
 
-    // Call the specific method to handle the form submission
+    // Save user to DB
     $result = $user->processUserData($username);
 
-    // Redirect or display a success message based on the result
     if ($result) {
         session_start();
 
@@ -27,11 +35,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION['current_question'] = 1;
         $_SESSION['user_id'] = $result; // Result is user_id or 0
 
+        // Lets start the test
         header("Location: quiz.php");
         exit;
     } else {
-        // Handle errors or display an error message
-        // You can redirect to an error page or display a message here
+        header("Location: index.php");
+        exit;
     }
 }
 ?>

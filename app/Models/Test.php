@@ -20,7 +20,6 @@ class Test extends Database
      * getTests
      *
      * @return array
-     * @throws PDOException
      */
     public function getTests(): array
     {
@@ -33,7 +32,9 @@ class Test extends Database
             $result = $stmt->execute();
             $result = $stmt->fetchAll();
         } catch (PDOException $e) {
-            return ["error" => $e->getMessage()];
+            // Log the error
+            error_log("Error in getTests(): " . $e->getMessage(), 3, "error.log");
+            return [];
         }
 
         return $result;
@@ -48,7 +49,7 @@ class Test extends Database
      * @param  mixed $questionPosition
      * @return array
      */
-    public function getQuestionData($testID = null, $questionPosition = null): array {
+    public function getQuestionData(int $testID = null, int $questionPosition = null): array {
 
         $questionData = [];
 
@@ -92,7 +93,9 @@ class Test extends Database
             }
         
         } catch (PDOException $e) {
-            return ["error" => $e->getMessage()];
+            // Log the error
+            error_log("Error in getQuestionData(): " . $e->getMessage(), 3, "error.log");
+            return [];
         }
     
         return $questionData;
@@ -106,9 +109,9 @@ class Test extends Database
      * @param  mixed $userID
      * @param  mixed $questionID
      * @param  mixed $answerID
-     * @return void
+     * @return int
      */
-    public function saveQuestionAnswer($userID = null, $questionID = null, $answerID = null) {
+    public function saveQuestionAnswer(int $userID = null, int $questionID = null, int $answerID = null): int {
 
         if (!$userID || !$questionID || !$answerID) {
             return 0;
@@ -132,12 +135,14 @@ class Test extends Database
                 return 0; // Failed to insert the user
             }
         } catch (PDOException $e) {
-            return $e->getMessage();
+            // Log the error
+            error_log("Error in saveQuestionAnswer(): " . $e->getMessage(), 3, "error.log");
+            return 0;
         }
 
     }
 
-    public function getTestQuestionCount($testID = null): int {
+    public function getTestQuestionCount(int $testID = null): int {
 
         if (!$testID) { 
             return 0;
@@ -156,14 +161,28 @@ class Test extends Database
             return $stmt->fetchColumn();
 
         } catch (PDOException $e) {
-            return ["error" => $e->getMessage()];
+            // Log the error
+            error_log("Error in getTestQuestionCount(): " . $e->getMessage(), 3, "error.log");
+            return 0;
         }
 
         return 0;
 
     }
+    
+    /**
+     * getCorrectUserAnswers
+     * 
+     * Get the count of correct answers provided by the user
+     *
+     * @param  mixed $userID
+     * @return int
+     */
+    public function getCorrectUserAnswers(int $userID = null): int {
 
-    public function getCorrectUserAnswers($userID = null) {
+        if (!$userID) { 
+            return 0;
+        }
 
         try {
             // Set PDO to throw exceptions on errors
@@ -180,10 +199,12 @@ class Test extends Database
             $stmt->execute();
 
             // Fetch the result and return it
-            return $stmt->fetchColumn();
+            return (int)$stmt->fetchColumn();
 
         } catch (PDOException $e) {
-            return ["error" => $e->getMessage()];
+            // Log the error
+            error_log("Error in getCorrectUserAnswers(): " . $e->getMessage(), 3, "error.log");
+            return 0;
         }
 
     }

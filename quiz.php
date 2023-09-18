@@ -1,11 +1,6 @@
 <?php
 
 require_once './app/Controllers/TestController.php';
-
-ini_set('display_errors', 1); 
-ini_set('display_startup_errors', 1); 
-error_reporting(E_ALL);
-
 session_start();
 
 // Session variables that need to be set for the user to be able to procceed
@@ -30,26 +25,37 @@ $userTest = $_SESSION["user_test"];
 $userID = $_SESSION['user_id'];
 $currentQuestion = $_SESSION['current_question'];
 $totalTestQuestionCount = $tests->getQuestionCount($userTest, $currentQuestion);
+$showError = false;
 
 // This happens when procceeding to the next question
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    
-    // Save user responses to each question in DB
-    $questionID = $_SESSION['question_id'];
-    $answerID = $_POST['answer'];
-    $result = $tests->saveUserResponses($userID, $questionID, $answerID);
+    if (isset($_POST['answer'])) {
+        // Save user responses to each question in DB
+        $questionID = $_SESSION['question_id'];
+        $answerID = $_POST['answer'];
+        // Validate answer ID
+        $answerID = preg_replace("/[^0-9]/", "", $answerID);
 
-    // Continue to next question after saving data to DB
-    if ($result) {
-        $currentQuestion++;
-        $_SESSION['current_question'] = $currentQuestion;
-    }
+        $result = $tests->saveUserResponses($userID, $questionID, $answerID);
 
-    // User has responded to all questions, redirect to results page
-    if ($currentQuestion > $totalTestQuestionCount) {
-        $_SESSION['test_finished'] = 1;
-        header("Location: result.php");
-        exit;
+        // Continue to next question after saving data to DB
+        if ($result) {
+            $currentQuestion++;
+            $_SESSION['current_question'] = $currentQuestion;
+
+            // User has responded to all questions, redirect to results page
+            if ($currentQuestion > $totalTestQuestionCount) {
+                $_SESSION['test_finished'] = 1;
+                header("Location: result.php");
+                exit;
+            }
+
+            // Prevent continuing to the next question by refreshing the page
+            header("Location: quiz.php");
+            exit;
+        }
+    } else {
+        $showError = true;
     }
 }
 
@@ -71,10 +77,14 @@ $questionTitle = $questionData['question_text'];
 <head>
     <meta charset="UTF-8">
     <title>Question Form</title>
+    <link rel="stylesheet" type="text/css" href="./style/style.css">
 </head>
 <body>
-    <h3> <?= $questionTitle; ?> </h3>
-    <form action="quiz.php" method="post">
+    <?php if ($showError): ?>
+        <span class="error">No answer provided!</span>
+    <?php endif; ?>
+    <h3 class="question-title"><?= $questionTitle; ?></h3>
+    <form action="quiz.php" method="post" class="quiz-form">
         <?php
         // Iterate through the answers and create radio buttons
         foreach ($questionData as $question) {
@@ -88,11 +98,20 @@ $questionTitle = $questionData['question_text'];
             }
         }
         ?>
-        <input type="submit" value="Submit">
+        <input type="submit" value="Turpināt" class="submit-button">
     </form>
+    <!-- Progress bar -->
+    <div class="progress-container">
+        <div class="progress-bar" id="myProgressBar"><?= ($currentQuestion - 1) / $totalTestQuestionCount * 100 ?>%</div>
+    </div>
+    <script>
 
-    <?= "Current Q:" . $currentQuestion . "\n"; ?>
-    <?= "Total Q count" . $totalTestQuestionCount . "\n"; ?>
+    var progressBar = document.getElementById("myProgressBar");
+    // Set the new width (for example, 50%)
+    var newWidth = <?= ($currentQuestion - 1) / $totalTestQuestionCount * 100 ?>;
+    // Change the width using the style property
+    progressBar.style.width = newWidth + "%";
+    </script>
 
 </body>
 </html>

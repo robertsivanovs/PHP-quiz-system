@@ -18,9 +18,11 @@ class User extends Database
      *
      * @param  String $username
      *
-     * @return bool
+     * @return int
+     * @throws PDOException
      */
-    public function createUser(string $username) {
+    public function createUser(string $username): int {
+
         try {
             $sql = "INSERT INTO users (username) VALUES (:username)";
             $stmt = $this->con->prepare($sql);
@@ -29,12 +31,14 @@ class User extends Database
 
             if ($result) {
                 // Return the ID of the newly created record
-                return $this->con->lastInsertId();
+                return (int)$this->con->lastInsertId();
             } else {
-                return false; // Failed to insert the user
+                return 0; // Failed to insert the user
             }
         } catch (PDOException $e) {
-            return $e->getMessage();
+            // Log the error
+            error_log("Error in createUser(): " . $e->getMessage(), 3, "error.log");
+            return 0;
         }
     }
 }

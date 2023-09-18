@@ -1,0 +1,127 @@
+/* Global Styles */
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #f0f0f0;
+}
+
+h1, h3 {
+    font-size: 24px;
+}
+
+.error {
+    color: #ff0000;
+}
+
+/* Index page */
+body.index {
+    text-align: center;
+}
+
+form.index-form {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    display: inline-block;
+    width: auto;
+    margin: 20px auto;
+}
+
+label {
+    font-weight: bold;
+}
+
+input[type="text"],
+select {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+input[type="submit"] {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+input[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+/* Main quiz page */
+body.quiz {
+    background-color: #f0f0f0;
+}
+
+form.quiz-form {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    display: inline-block;
+    width: 80%;
+    margin: 20px auto;
+}
+
+p {
+    margin: 10px 0;
+}
+
+input[type="radio"] {
+    margin-right: 5px;
+}
+
+/* Progress bar */
+.progress-container {
+    width: 80%;
+    margin: 20px auto;
+    background-color: #ccc;
+    border-radius: 8px;
+}
+
+.progress-bar {
+    width: 0;
+    height: 30px;
+    background-color: #4CAF50;
+    text-align: center;
+    line-height: 30px;
+    color: white;
+    border-radius: 8px;
+}
+
+/* Results page */
+.container {
+    margin: 0 auto;
+    max-width: 400px;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.results {
+    margin-bottom: 20px;
+}
+
+a {
+    text-decoration: none;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-weight: bold;
+    display: inline-block;
+}
+
+a:hover {
+    background-color: #0056b3;
+}

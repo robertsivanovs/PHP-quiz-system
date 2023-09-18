@@ -3,6 +3,7 @@
 namespace app\Classes;
 
 use PDO;
+use PDOException;
 
 /**
  * database class @author Roberts Ivanovs
@@ -12,7 +13,7 @@ class Database
 {
 
     public $serverName = "localhost";
-    public $username = "debian-sys-maint";
+    public $username = "debian-sys-mainth";
     public $password = "AaXz923xselSfJAz";
     public $dbname = "php_quiz";
     public $con;

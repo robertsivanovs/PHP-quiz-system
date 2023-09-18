@@ -1,11 +1,6 @@
 <?php
 
 require_once './app/Controllers/TestController.php';
-
-ini_set('display_errors', 1); 
-ini_set('display_startup_errors', 1); 
-error_reporting(E_ALL);
-
 session_start();
 
 // Session variables that have to be set by this point
@@ -34,6 +29,8 @@ $userID = $_SESSION["user_id"];
 $totalTestQuestionCount = $tests->getQuestionCount($userTest, $currentQuestion);
 $correctQuestionCount = $tests->getCorrectAnswerCount($userID);
 
+// Destroy all session data
+session_destroy();
 ?>
 
 <!DOCTYPE html>
@@ -41,6 +38,7 @@ $correctQuestionCount = $tests->getCorrectAnswerCount($userID);
 <head>
     <meta charset="UTF-8">
     <title>Results</title>
+    <link rel="stylesheet" type="text/css" href="./style/style.css">
 </head>
 <body>
     <div class="container">
@@ -48,6 +46,7 @@ $correctQuestionCount = $tests->getCorrectAnswerCount($userID);
             <h2>Paldies, <?= $username ?></h2>
             <p>Esat pareizi atbildējis uz <?= $correctQuestionCount; ?> no <?= $totalTestQuestionCount ?> jautājumiem</p>
         </div>
+        <a href="./" class="return-link">Atgriezties</a>
     </div>
 </body>
 </html>

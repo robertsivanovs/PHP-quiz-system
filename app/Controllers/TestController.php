@@ -4,79 +4,81 @@ declare(strict_types=1);
 require_once './app/Models/Test.php';
 
 class TestController {
-
     private $testModel;
-    
+
+    public function __construct() {
+        $this->testModel = new Test();
+    }
+
     /**
-     * getTestList
-     * 
-     * Fetches the list of all tests from the DB
+     * Fetches the list of all tests from the DB.
      *
      * @return array
      */
     public function getTestList(): array {
-
-        $this->testModel = new Test;
-        $result = $this->testModel->getTests();
-        return $result;
-
+        return $this->testModel->getTests();
     }
-    
+
     /**
-     * getTestData
-     * 
-     * Fetches current question and its answers from DB
+     * Fetches current question and its answers from DB.
      *
-     * @param  mixed $userTest
-     * @param  mixed $questionPosition
+     * @param int $userTest
+     * @param int $questionPosition
      * @return array
      */
-    public function getQuestionData($userTest = null, $questionPosition = null): array {
-
-        $data = [];
-
-        if (!$userTest || !$questionPosition) {
-            return $data;
-        }
-
-        $this->testModel = new Test;
-
-        if ($this->testModel->getQuestionData($userTest, $questionPosition)) {
-            return $data = $this->testModel->getQuestionData($userTest, $questionPosition);
-        }
+    public function getQuestionData(int $userTest, int $questionPosition): array {
         
-        return $data;
+        if (!$userTest || !$questionPosition) {
+            return [];
+        }
+
+        return $this->testModel->getQuestionData($userTest, $questionPosition) ?: [];
     }
-    
+
     /**
-     * saveUserResponses
-     * 
-     * Saves user provided answers to DB
+     * Saves user provided answers to DB.
      *
-     * @param  mixed $userID
-     * @param  mixed $questionID
-     * @param  mixed $answerID
+     * @param int $userID
+     * @param int $questionID
+     * @param int $answerID
      * @return int
      */
-    public function saveUserResponses($userID = null, $questionID = null, $answerID = null): int {
+    public function saveUserResponses(int $userID, int $questionID, int $answerID): int {
 
         if (!$userID || !$questionID || !$answerID) {
             return 0;
         }
 
-        $this->testModel = new Test;
         return (int)$this->testModel->saveQuestionAnswer($userID, $questionID, $answerID);
-
     }
 
-    public function getQuestionCount($testID = null) {
-        $this->testModel = new Test;
-        return $this->testModel->getTestQuestionCount($testID);
+    /**
+     * Returns total question count in the current test.
+     *
+     * @param int $testID
+     * @return int
+     */
+    public function getQuestionCount(int $testID): int {
+
+        if (!$testID) {
+            return 0;
+        }
+
+        return (int)$this->testModel->getTestQuestionCount($testID);
     }
 
-    public function getCorrectAnswerCount($userID = null) {
-        $this->testModel = new Test;
-        return $this->testModel->getCorrectUserAnswers($userID);
+    /**
+     * Returns correct answer count for the current user.
+     *
+     * @param int $userID
+     * @return int
+     */
+    public function getCorrectAnswerCount(int $userID): int {
 
+        if (!$userID) {
+            return 0;
+        }
+
+        return (int)$this->testModel->getCorrectUserAnswers($userID);
     }
 }
