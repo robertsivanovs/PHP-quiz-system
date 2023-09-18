@@ -1,7 +1,6 @@
 <?php
 
 declare(strict_types=1);
-
 require_once './app/Models/Test.php';
 
 class TestController {
@@ -25,12 +24,14 @@ class TestController {
     
     /**
      * getTestData
+     * 
+     * Fetches current question and its answers from DB
      *
      * @param  mixed $userTest
      * @param  mixed $questionPosition
      * @return array
      */
-    public function getTestData($userTest = null, $questionPosition = null): array {
+    public function getQuestionData($userTest = null, $questionPosition = null): array {
 
         $data = [];
 
@@ -40,21 +41,42 @@ class TestController {
 
         $this->testModel = new Test;
 
-        if ($this->testModel->getTestData($userTest, $questionPosition)) {
-            return $data = $this->testModel->getTestData($userTest, $questionPosition);
+        if ($this->testModel->getQuestionData($userTest, $questionPosition)) {
+            return $data = $this->testModel->getQuestionData($userTest, $questionPosition);
         }
         
         return $data;
     }
-
-    public function saveUserResponses($userID = null, $questionID = null, $answerID = null) {
+    
+    /**
+     * saveUserResponses
+     * 
+     * Saves user provided answers to DB
+     *
+     * @param  mixed $userID
+     * @param  mixed $questionID
+     * @param  mixed $answerID
+     * @return int
+     */
+    public function saveUserResponses($userID = null, $questionID = null, $answerID = null): int {
 
         if (!$userID || !$questionID || !$answerID) {
             return 0;
         }
 
         $this->testModel = new Test;
-        return $this->testModel->saveQuestionAnswer($userID, $questionID, $answerID);
+        return (int)$this->testModel->saveQuestionAnswer($userID, $questionID, $answerID);
+
+    }
+
+    public function getQuestionCount($testID = null) {
+        $this->testModel = new Test;
+        return $this->testModel->getTestQuestionCount($testID);
+    }
+
+    public function getCorrectAnswerCount($userID = null) {
+        $this->testModel = new Test;
+        return $this->testModel->getCorrectUserAnswers($userID);
 
     }
 }
