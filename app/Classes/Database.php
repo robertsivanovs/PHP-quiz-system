@@ -6,38 +6,45 @@ use PDO;
 use PDOException;
 
 /**
- * database class @author Roberts Ivanovs
- * Tiek veidota, lai izveidotu veiksmīgu savienojumu ar datubāzi.
+ * Database class @author Roberts Ivanovs
+ * Used for establishing a connection to the database
  */
 class Database
 {
 
-    public $serverName = "localhost";
-    public $username = "debian-sys-mainth";
-    public $password = "AaXz923xselSfJAz";
-    public $dbname = "php_quiz";
+    public $serverName = "";
+    public $username = "";
+    public $password = "";
+    public $dbname = "";
     public $con;
 
     /**
-     * __construct
+     * Constructor
      *
-     * Konstruktors, tiek izpildīts veidojot jaunu objektu.
-     * Pie izpildes tiek veidots savienojums ar datubāzi.
+     * This constructor is executed when creating a new object.
+     * It establishes a connection to the database.
      * 
-     * Atgriež PDO kļūdas paziņojumu, ja savienojums nav izdevies.
+     * Throws a PDO exception if the connection fails.
      * 
-     * @throws PDOException $e
-     * @return void
+     * @throws PDOException If the database connection fails.
      */
     public function __construct()
     {
         try {
+            // Create a PDO database connection with specified settings.
             $this->con = new PDO("mysql:host=$this->serverName;dbname=$this->dbname; charset=UTF8", $this->username, $this->password);
+
+            // Set PDO error mode to throw exceptions for better error handling.
             $this->con->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+            // Set the default fetch mode to associative arrays for result sets.
             $this->con->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+
+            // Disable emulated prepared statements for security.
             $this->con->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
         } catch (PDOException $e) {
-            return $e->getMessage();
+            // Return the PDO exception message if the connection fails.
+            throw $e;
         }
     }
 }
