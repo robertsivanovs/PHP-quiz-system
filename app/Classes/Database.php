@@ -11,13 +11,6 @@ use PDOException;
  */
 class Database
 {
-
-    public $serverName = "";
-    public $username = "";
-    public $password = "";
-    public $dbname = "";
-    public $con;
-
     /**
      * Constructor
      *
@@ -28,7 +21,13 @@ class Database
      * 
      * @throws PDOException If the database connection fails.
      */
-    public function __construct()
+    public function __construct(
+        private string $serverName = "localhost",
+        private string $username = "debian-sys-maint",
+        private string $password = "AaXz923xselSfJAz",
+        private string $dbname = "php_quiz_new",
+        public $con = null
+    )
     {
         try {
             // Create a PDO database connection with specified settings.

@@ -3,20 +3,20 @@
 declare(strict_types=1);
 require_once './app/Models/Test.php';
 
-class TestController {
-    private $testModel;
-
-    public function __construct() {
-        $this->testModel = new Test();
-    }
+class TestController 
+{
+    public function __construct(
+        private $testModel = new Test()
+    ) {}
 
     /**
      * Fetches the list of all tests from the DB.
      *
      * @return array
      */
-    public function getTestList(): array {
-        return $this->testModel->getTests();
+    public function getTestList(): array 
+    {
+        return $this->testModel->getTests() ?? [];
     }
 
     /**
@@ -26,8 +26,8 @@ class TestController {
      * @param int $questionPosition
      * @return array
      */
-    public function getQuestionData(int $userTest, int $questionPosition): array {
-        
+    public function getQuestionData(?int $userTest = null, ?int $questionPosition = null): array 
+    {
         if (!$userTest || !$questionPosition) {
             return [];
         }
@@ -43,8 +43,8 @@ class TestController {
      * @param int $answerID
      * @return int
      */
-    public function saveUserResponses(int $userID, int $questionID, int $answerID): int {
-
+    public function saveUserResponses(?int $userID = null, ?int $questionID = null, ?int $answerID = null): int 
+    {
         if (!$userID || !$questionID || !$answerID) {
             return 0;
         }
@@ -58,8 +58,8 @@ class TestController {
      * @param int $testID
      * @return int
      */
-    public function getQuestionCount(int $testID): int {
-
+    public function getQuestionCount(?int $testID = null): int 
+    {
         if (!$testID) {
             return 0;
         }
@@ -73,8 +73,8 @@ class TestController {
      * @param int $userID
      * @return int
      */
-    public function getCorrectAnswerCount(int $userID): int {
-
+    public function getCorrectAnswerCount(?int $userID = null): int 
+    {
         if (!$userID) {
             return 0;
         }

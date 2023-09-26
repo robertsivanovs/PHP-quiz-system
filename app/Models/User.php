@@ -1,28 +1,25 @@
 <?php
 
 declare(strict_types=1);
-
 use app\Classes\Database;
+require_once './app/Classes/Database.php';
 
 /**
  * User model @author Roberts Ivanovs
+ * Executes the required SQL queries for saving the user data to database
  */
-require_once './app/Classes/Database.php';
-
 class User extends Database
 {
     /**
      * createUser
      * 
-     * Saves the user data to DB
+     * Saves user data to DB
      *
-     * @param  String $username
-     *
+     * @param String $username
      * @return int
-     * @throws PDOException
      */
-    public function createUser(string $username): int {
-
+    public function createUser(string $username): int 
+    {
         try {
             $sql = "INSERT INTO users (username) VALUES (:username)";
             $stmt = $this->con->prepare($sql);

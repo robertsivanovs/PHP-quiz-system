@@ -13,7 +13,9 @@ class Test extends Database
 {
     public function __construct()
     {
-        parent::__construct(); // Call the parent constructor
+        parent::__construct();
+        // Set PDO to throw exceptions on errors        
+        $this->con->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }
     
     /**
@@ -24,20 +26,20 @@ class Test extends Database
     public function getTests(): array
     {
         try {
-            // Set PDO to throw exceptions on errors
-            $this->con->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
             $sql = "SELECT id, title FROM tests";
             $stmt = $this->con->prepare($sql);
             $result = $stmt->execute();
             $result = $stmt->fetchAll();
+
+            return $result;
+
         } catch (PDOException $e) {
             // Log the error
             error_log("Error in getTests(): " . $e->getMessage(), 3, "error.log");
             return [];
         }
 
-        return $result;
+        return [];
     }
     
     /**
@@ -45,40 +47,29 @@ class Test extends Database
      * 
      * Fetches the current question and its answers from the DB
      *
-     * @param  mixed $testID
-     * @param  mixed $questionPosition
+     * @param int $testID
+     * @param int $questionPosition
      * @return array
      */
-    public function getQuestionData(int $testID = null, int $questionPosition = null): array {
-
+    public function getQuestionData(int $testID, int $questionPosition): array 
+    {
         $questionData = [];
 
-        if (!$testID || !$questionPosition) {
-            return $questionData;
-        }
-    
         try {
-            // Set PDO to throw exceptions on errors
-            $this->con->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        
-            // Prepare and execute a query to fetch a single question and its answers for the selected test and position
-            $selectedTestId = $testID; // Replace with the actual selected test ID
-            $currentQuestionPosition = $questionPosition;
-        
             $sql = "SELECT q.id AS question_id, q.question_text, q.`position`, a.id AS answer_id, a.answer_text, a.is_correct
                     FROM questions q
                     JOIN answers a ON q.id = a.question_id
                     WHERE q.test_id = :test_id
                     AND q.`position` = :position";
-    
+
             $stmt = $this->con->prepare($sql);
-            $stmt->bindParam(':test_id', $selectedTestId, PDO::PARAM_INT);
-            $stmt->bindParam(':position', $currentQuestionPosition, PDO::PARAM_INT);
-            $stmt->execute();
-    
-            // Fetch the result into an associative array    
+            $stmt->execute([
+                ':test_id' => $testID,
+                ':position' => $questionPosition,
+            ]);
+
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                if (!$questionData) {
+                if (empty($questionData)) {
                     $questionData = [
                         'question_text' => $row['question_text'],
                         'question_id' => $row['question_id'],
@@ -91,9 +82,7 @@ class Test extends Database
                     'is_correct' => $row['is_correct']
                 ];
             }
-        
         } catch (PDOException $e) {
-            // Log the error
             error_log("Error in getQuestionData(): " . $e->getMessage(), 3, "error.log");
             return [];
         }
@@ -106,27 +95,21 @@ class Test extends Database
      * 
      * Saves the answer provided the the current question in DB
      *
-     * @param  mixed $userID
-     * @param  mixed $questionID
-     * @param  mixed $answerID
+     * @param int $userID
+     * @param int $questionID
+     * @param int $answerID
      * @return int
      */
-    public function saveQuestionAnswer(int $userID = null, int $questionID = null, int $answerID = null): int {
-
-        if (!$userID || !$questionID || !$answerID) {
-            return 0;
-        }
-
+    public function saveQuestionAnswer(int $userID, int $questionID, int $answerID): int 
+    {
         try {
-            // Set PDO to throw exceptions on errors
-            $this->con->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
             $sql = "INSERT INTO user_responses (user_id, question_id, selected_answer_id) VALUES (:user_id, :question_id, :answer_id)";
             $stmt = $this->con->prepare($sql);
-            $stmt->bindValue(':user_id', $userID, PDO::PARAM_INT);
-            $stmt->bindValue(':question_id', $questionID, PDO::PARAM_INT);
-            $stmt->bindValue(':answer_id', $answerID, PDO::PARAM_INT);
-            $result = $stmt->execute();
+            $result = $stmt->execute([
+                ':user_id' => $userID,
+                ':question_id' => $questionID,
+                ':answer_id' => $answerID
+            ]);
 
             if ($result) {
                 // Return the ID of the newly created record
@@ -141,22 +124,20 @@ class Test extends Database
         }
 
     }
-
-    public function getTestQuestionCount(int $testID = null): int {
-
-        if (!$testID) { 
-            return 0;
-        }
-
+    
+    /**
+     * getTestQuestionCount
+     *
+     * @param int $testID
+     * @return int
+     */
+    public function getTestQuestionCount(int $testID): int 
+    {
         try {
-            // Set PDO to throw exceptions on errors
-            $this->con->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
             $sql = "SELECT COUNT(*) FROM questions WHERE test_id = :test_id";
             $stmt = $this->con->prepare($sql);
-            $stmt->bindParam(':test_id', $testID, PDO::PARAM_INT);
-            $result = $stmt->execute();
-            
+            $stmt->execute([':test_id' => $testID]);
+
             // Fetch the result and return it
             return $stmt->fetchColumn();
 
@@ -175,19 +156,12 @@ class Test extends Database
      * 
      * Get the count of correct answers provided by the user
      *
-     * @param  mixed $userID
+     * @param int $userID
      * @return int
      */
-    public function getCorrectUserAnswers(int $userID = null): int {
-
-        if (!$userID) { 
-            return 0;
-        }
-
-        try {
-            // Set PDO to throw exceptions on errors
-            $this->con->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                
+    public function getCorrectUserAnswers(int $userID): int 
+    {
+        try {   
             $sql = "SELECT COUNT(user_responses.selected_answer_id)
                     FROM user_responses
                     JOIN answers ON user_responses.selected_answer_id = answers.id
@@ -195,8 +169,7 @@ class Test extends Database
                     AND answers.is_correct = 1";
     
             $stmt = $this->con->prepare($sql);
-            $stmt->bindParam(':user_id', $userID, PDO::PARAM_INT);
-            $stmt->execute();
+            $stmt->execute([':user_id' => $userID]);
 
             // Fetch the result and return it
             return (int)$stmt->fetchColumn();
@@ -206,7 +179,5 @@ class Test extends Database
             error_log("Error in getCorrectUserAnswers(): " . $e->getMessage(), 3, "error.log");
             return 0;
         }
-
     }
-
 }

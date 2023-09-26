@@ -43,7 +43,7 @@ session_destroy();
 <body>
     <div class="container">
         <div class="results">
-            <h2>Paldies, <?= $username ?></h2>
+            <h2>Paldies, <?= $username ?>!</h2>
             <p>Esat pareizi atbildējis uz <?= $correctQuestionCount; ?> no <?= $totalTestQuestionCount ?> jautājumiem</p>
         </div>
         <a href="./" class="return-link">Atgriezties</a>
