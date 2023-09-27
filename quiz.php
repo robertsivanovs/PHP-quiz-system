@@ -1,6 +1,8 @@
 <?php
 
 require_once './app/Controllers/TestController.php';
+require_once './app/Classes/Validator.php';
+
 session_start();
 
 // Session variables that need to be set for the user to be able to procceed
@@ -21,9 +23,10 @@ foreach ($sessionVariables as $variable) {
 
 $tests = new TestController;
 $userName = $_SESSION["username"];
-$userTest = $_SESSION["user_test"];
-$userID = $_SESSION['user_id'];
-$currentQuestion = $_SESSION['current_question'];
+$userTest = (int)$_SESSION["user_test"];
+$userID = (int)$_SESSION['user_id'];
+$currentQuestion = (int)$_SESSION['current_question'];
+
 $totalTestQuestionCount = $tests->getQuestionCount($userTest, $currentQuestion);
 $showError = false;
 

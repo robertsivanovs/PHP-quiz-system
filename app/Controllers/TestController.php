@@ -32,7 +32,12 @@ class TestController
      */
     public function getQuestionData(?int $userTest = null, ?int $questionPosition = null): array 
     {
-        if (!$userTest || !$questionPosition) {
+        // Validate if the values are integers, log the error if not
+        if (gettype($userTest) != "integer" || gettype($questionPosition) != "integer") {
+            error_log(
+                "Error in getQuestionData(): TestID or QuestionPos is not integer" . "\n", 3, 
+                "error.log"
+            );
             return [];
         }
 
@@ -49,7 +54,16 @@ class TestController
      */
     public function saveUserResponses(?int $userID = null, ?int $questionID = null, ?int $answerID = null): int 
     {
-        if (!$userID || !$questionID || !$answerID) {
+        // Validate if the values are integers, log the error if not
+        if (
+            gettype($userID) != "integer" || 
+            gettype($questionID) != "integer" ||
+            gettype($answerID) != "integer"
+        ) {
+            error_log(
+                "Error in saveUserResponses(): UserID, QuestionID or AnswerID is not integer" . "\n", 3, 
+                "error.log"
+            );
             return 0;
         }
 
@@ -63,8 +77,13 @@ class TestController
      * @return int
      */
     public function getQuestionCount(?int $testID = null): int 
-    {
-        if (!$testID) {
+    {        
+        // Validate if the values are integers, log the error if not
+        if (gettype($testID) != "integer") {
+            error_log(
+                "Error in getQuestionCount(): TestID is not integer" . "\n", 3, 
+                "error.log"
+            );
             return 0;
         }
 
@@ -79,7 +98,12 @@ class TestController
      */
     public function getCorrectAnswerCount(?int $userID = null): int 
     {
-        if (!$userID) {
+        // Validate if the values are integers, log the error if not
+        if (gettype($userID) != "integer") {
+            error_log(
+                "Error in getCorrectAnswerCount(): TestID is not integer" . "\n", 3, 
+                "error.log"
+            );
             return 0;
         }
 
@@ -98,7 +122,16 @@ class TestController
      */
     public function saveFinalResult(?int $userID = null, ?int $testID = null, ?int $correctAnswers = null): int
     {
-        if (!$userID || !$testID) { // To do add validation
+        // Validate if the values are integers, log the error if not
+        if (
+            gettype($userID) != "integer" || 
+            gettype($testID) != "integer" ||
+            gettype($correctAnswers) != "integer"
+        ) {
+            error_log(
+                "Error in saveFinalResult(): UserID, testID or correctAnswers is not integer" . "\n", 3, 
+                "error.log"
+            );
             return 0;
         }
 
