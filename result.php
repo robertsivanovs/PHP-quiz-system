@@ -26,8 +26,14 @@ $userTest = $_SESSION["user_test"];
 $username = $_SESSION["username"];
 $userID = $_SESSION["user_id"];
 
+// Get total test question count
 $totalTestQuestionCount = $tests->getQuestionCount($userTest, $currentQuestion);
+
+// Get how many answers were correct
 $correctQuestionCount = $tests->getCorrectAnswerCount($userID);
+
+// Save final result to DB
+$tests->saveFinalResult($userID, $userTest, $correctQuestionCount);
 
 // Destroy all session data
 session_destroy();

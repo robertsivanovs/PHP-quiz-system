@@ -25,7 +25,7 @@ class Database
         private string $serverName = "localhost",
         private string $username = "debian-sys-maint",
         private string $password = "AaXz923xselSfJAz",
-        private string $dbname = "php_quiz_new",
+        private string $dbname = "php_quiz",
         public $con = null
     )
     {

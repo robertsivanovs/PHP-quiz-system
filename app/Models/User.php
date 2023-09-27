@@ -23,8 +23,7 @@ class User extends Database
         try {
             $sql = "INSERT INTO users (username) VALUES (:username)";
             $stmt = $this->con->prepare($sql);
-            $stmt->bindValue(':username', $username);
-            $result = $stmt->execute();
+            $result = $stmt->execute([':username' => $username]);
 
             if ($result) {
                 // Return the ID of the newly created record

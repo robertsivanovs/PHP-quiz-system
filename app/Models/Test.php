@@ -5,7 +5,10 @@ declare(strict_types=1);
 use app\Classes\Database;
 
 /**
- * Test (Quiz) model
+ * 
+ * Test (Quiz) model @author Roberts Ivanovs
+ * Manages all methods for saving and loading quiz data from the database
+ * 
  */
 require_once './app/Classes/Database.php';
 
@@ -20,6 +23,9 @@ class Test extends Database
     
     /**
      * getTests
+     * 
+     * Fetches a list of all available tests.
+     * Tests are stored in the tests DB table.
      *
      * @return array
      */
@@ -93,7 +99,7 @@ class Test extends Database
     /**
      * saveQuestionAnswer
      * 
-     * Saves the answer provided the the current question in DB
+     * Saves the answer provided to the current question in DB
      *
      * @param int $userID
      * @param int $questionID
@@ -127,6 +133,8 @@ class Test extends Database
     
     /**
      * getTestQuestionCount
+     * 
+     * Selects the total question count for the given test.
      *
      * @param int $testID
      * @return int
@@ -179,5 +187,42 @@ class Test extends Database
             error_log("Error in getCorrectUserAnswers(): " . $e->getMessage(), 3, "error.log");
             return 0;
         }
+    }
+    
+    /**
+     * saveFinalResult
+     * 
+     * Save the final user test result to DB.
+     * Data is being saved in results table.
+     *
+     * @param  int $userID
+     * @param  int $testID
+     * @param  int $correctAnswers
+     * @return int
+     */
+    public function saveFinalResult(int $userID, int $testID, int $correctAnswers): int
+    {
+        try {
+            $sql = "INSERT INTO results (user_id, test_id, correct_answers) VALUES (:user_id, :test_id, :correct_answers)";
+            $stmt = $this->con->prepare($sql);
+            $result = $stmt->execute([
+                ':user_id' => $userID,
+                ':test_id' => $testID,
+                ':correct_answers' => $correctAnswers
+            ]);
+
+            if ($result) {
+                // Return the ID of the newly created record
+                return (int)$this->con->lastInsertId();
+            }
+            
+        } catch (PDOException $e) {
+            // Log the error
+            error_log("Error in saveQuestionAnswer(): " . $e->getMessage(), 3, "error.log");
+            return 0;
+        }
+
+        return 0; // Failed to insert the user
+
     }
 }

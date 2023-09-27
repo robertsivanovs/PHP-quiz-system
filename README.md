@@ -6,7 +6,7 @@ Stack used for creation - LEMP (Linux Nginx MySQL PHP).
 
 Code has been structured to match MVP architecture as close as possible.
 
-PHP 7.4 plain, no frameworks no libraries
+PHP 8.2 plain, no frameworks no libraries
 
 ### To set up the project:
 

@@ -22,8 +22,8 @@ class TestController
     /**
      * Fetches current question and its answers from DB.
      *
-     * @param int $userTest
-     * @param int $questionPosition
+     * @param mixed $userTest
+     * @param mixed $questionPosition
      * @return array
      */
     public function getQuestionData(?int $userTest = null, ?int $questionPosition = null): array 
@@ -38,9 +38,9 @@ class TestController
     /**
      * Saves user provided answers to DB.
      *
-     * @param int $userID
-     * @param int $questionID
-     * @param int $answerID
+     * @param mixed $userID
+     * @param mixed $questionID
+     * @param mixed $answerID
      * @return int
      */
     public function saveUserResponses(?int $userID = null, ?int $questionID = null, ?int $answerID = null): int 
@@ -55,7 +55,7 @@ class TestController
     /**
      * Returns total question count in the current test.
      *
-     * @param int $testID
+     * @param mixed $testID
      * @return int
      */
     public function getQuestionCount(?int $testID = null): int 
@@ -70,7 +70,7 @@ class TestController
     /**
      * Returns correct answer count for the current user.
      *
-     * @param int $userID
+     * @param mixed $userID
      * @return int
      */
     public function getCorrectAnswerCount(?int $userID = null): int 
@@ -80,5 +80,25 @@ class TestController
         }
 
         return (int)$this->testModel->getCorrectUserAnswers($userID);
+    }
+    
+    /**
+     * saveFinalResult
+     * 
+     * Saves the final test result to DB
+     *
+     * @param mixed $userID
+     * @param mixed $testID
+     * @param mixed $correctAnswers
+     * @return int
+     */
+    public function saveFinalResult(?int $userID = null, ?int $testID = null, ?int $correctAnswers = null): int
+    {
+        if (!$userID || !$testID) { // To do add validation
+            return 0;
+        }
+
+        return (int)$this->testModel->saveFinalResult($userID, $testID, $correctAnswers);
+
     }
 }
