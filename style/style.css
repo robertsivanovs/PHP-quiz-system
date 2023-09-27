@@ -9,21 +9,43 @@ h1, h3 {
     font-size: 24px;
 }
 
+p {
+    margin: 10px 0;
+}
+
+a {
+    text-decoration: none;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-weight: bold;
+    display: inline-block;
+}
+
+a:hover {
+    background-color: #0056b3;
+}
+
+
+/* Index page and quiz view */
 .error {
     color: #ff0000;
 }
 
-/* Index page */
-body.index {
+body.quiz {
     text-align: center;
+    background-color: #f0f0f0;
 }
 
-form.index-form {
+form.quiz-form {
     background-color: #ffffff;
     padding: 20px;
     border-radius: 8px;
     display: inline-block;
-    width: auto;
+    width: 60%;
     margin: 20px auto;
 }
 
@@ -55,23 +77,6 @@ input[type="submit"]:hover {
     background-color: #0056b3;
 }
 
-/* Main quiz page */
-body.quiz {
-    background-color: #f0f0f0;
-}
-
-form.quiz-form {
-    background-color: #ffffff;
-    padding: 20px;
-    border-radius: 8px;
-    display: inline-block;
-    width: 80%;
-    margin: 20px auto;
-}
-
-p {
-    margin: 10px 0;
-}
 
 input[type="radio"] {
     margin-right: 5px;
@@ -79,7 +84,7 @@ input[type="radio"] {
 
 /* Progress bar */
 .progress-container {
-    width: 80%;
+    width: 60%;
     margin: 20px auto;
     background-color: #ccc;
     border-radius: 8px;
@@ -108,20 +113,4 @@ input[type="radio"] {
 
 .results {
     margin-bottom: 20px;
-}
-
-a {
-    text-decoration: none;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    cursor: pointer;
-    font-weight: bold;
-    display: inline-block;
-}
-
-a:hover {
-    background-color: #0056b3;
 }

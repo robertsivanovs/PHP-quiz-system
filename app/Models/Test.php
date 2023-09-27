@@ -1,17 +1,14 @@
 <?php
 
 declare(strict_types=1);
+require_once './app/Classes/Database.php';
 
 use app\Classes\Database;
 
 /**
- * 
  * Test (Quiz) model @author Roberts Ivanovs
  * Manages all methods for saving and loading quiz data from the database
- * 
  */
-require_once './app/Classes/Database.php';
-
 class Test extends Database
 {
     public function __construct()

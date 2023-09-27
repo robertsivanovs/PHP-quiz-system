@@ -33,8 +33,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Save user responses to each question in DB
         $questionID = $_SESSION['question_id'];
         $answerID = $_POST['answer'];
-        // Validate answer ID
-        $answerID = preg_replace("/[^0-9]/", "", $answerID);
+        // Initialize the validator class and perform validation
+        $V1 = new Validator();
+        // Validate Test ID
+        $V1->setField("Answer ID")->setValue($answerID)->checkEmpty()->isInteger();
+
+        // If validation was unsuccessfult return to index and display validation errors
+        if (!$V1->valid()) {
+            error_log("Error when validating user answer input: " . $V1->getErrors(), 3, "error.log");
+            header("Location: index.php");
+            exit;
+        }
 
         $result = $tests->saveUserResponses($userID, $questionID, $answerID);
 
@@ -62,12 +71,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 // Fetch current question data from DB
 $questionData = $tests->getQuestionData($userTest, $currentQuestion);
 
+// If no question data found redirect to index
 if (!$questionData) {
     header("Location: index.php");
     exit;
 }
 
+// Store question ID data in session variable
 $_SESSION["question_id"] = $questionData['question_id'];
+
+// Set Question title
 $questionTitle = $questionData['question_text'];
 
 ?>
@@ -98,7 +111,7 @@ $questionTitle = $questionData['question_text'];
             }
         }
         ?>
-        <input type="submit" value="Turpināt" class="submit-button">
+        <input type="submit" value="Continue" class="submit-button">
     </form>
     <!-- Progress bar -->
     <div class="progress-container">

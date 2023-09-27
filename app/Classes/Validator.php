@@ -4,7 +4,6 @@
  * Validator class @author Roberts Ivanovs
  * Used for validating user input
  */
-
 class Validator 
 {
     public function __construct(

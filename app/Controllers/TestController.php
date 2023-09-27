@@ -3,6 +3,10 @@
 declare(strict_types=1);
 require_once './app/Models/Test.php';
 
+/**
+ * TestController class @author Roberts Ivanovs
+ * Handles all actions related to the quiz
+ */
 class TestController 
 {
     public function __construct(
