@@ -1,31 +1,27 @@
 <?php
 
-ini_set('display_errors', 1); 
-ini_set('display_startup_errors', 1); 
-error_reporting(E_ALL);
-
 require_once './app/Controllers/UserController.php';
+require_once './app/Classes/Validator.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Retrieve form data
-    $username = $_POST["username"];
-    $userTest = $_POST["test"];
+    $username = trim($_POST["username"]);
+    $userTest = trim($_POST["test"]);
 
-    // Only way this can occur is by tinkering with form HTML manually
-    if (!$username || !$userTest) {
+    // Initialize the validator class and perform validation
+    $V1 = new Validator();
+    // Validate username
+    $V1->setField("Username")->setValue($username)->checkEmpty()->sanitizeUsername();
+    // Validate Test ID
+    $V1->setField("Test ID")->setValue($userTest)->checkEmpty()->isInteger();
+
+    // If validation was unsuccessfult return to index and display validation errors
+    if (!$V1->valid()) {
+        error_log("Error when validating user input getTests(): " . $V1->getErrors(), 3, "error.log");
         header("Location: index.php");
         exit;
     }
-
-    $username = trim($username);
-    $userTest = trim($userTest);
-
-    // Remove all symbols except alphanumeric characters and whitespace
-    $username = preg_replace("/[^a-zA-Z0-9\s]/", "", $username);
-
-    // Remove all symbols except numeric characters
-    $userTest = preg_replace("/[^0-9]/", "", $userTest);
-
+    
     $user = new UserController();
 
     // Save user to DB
