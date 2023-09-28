@@ -14,8 +14,6 @@ class Test extends Database
     public function __construct()
     {
         parent::__construct();
-        // Set PDO to throw exceptions on errors        
-        $this->con->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }
     
     /**

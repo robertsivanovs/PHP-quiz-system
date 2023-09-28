@@ -1,2 +1,3 @@
 php_quiz.sql
 error.log
+app\Classes\Database.php
