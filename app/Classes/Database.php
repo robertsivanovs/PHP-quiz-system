@@ -22,10 +22,10 @@ class Database
      * @throws PDOException If the database connection fails.
      */
     public function __construct(
-        private string $serverName = "localhost",
-        private string $username = "debian-sys-maint",
-        private string $password = "AaXz923xselSfJAz",
-        private string $dbname = "php_quiz",
+        private string $serverName = "",
+        private string $username = "",
+        private string $password = "",
+        private string $dbname = "",
         public $con = null
     )
     {
