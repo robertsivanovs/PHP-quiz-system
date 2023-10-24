@@ -3,10 +3,13 @@
 require_once './app/Controllers/TestController.php';
 session_start();
 
+// Addiitonal session security
+session_regenerate_id(true);
+
 // Session variables that have to be set by this point
 $sessionVariables = [
     'username',
-    'user_test',
+    'user_test_id',
     'user_id',
     'current_question',
     'test_finished'
@@ -22,18 +25,18 @@ foreach ($sessionVariables as $variable) {
 
 $tests = new TestController;
 $currentQuestion = $_SESSION['current_question'];
-$userTest = $_SESSION["user_test"];
+$userTestId = $_SESSION["user_test_id"];
 $username = $_SESSION["username"];
 $userID = $_SESSION["user_id"];
 
 // Get total test question count
-$totalTestQuestionCount = $tests->getQuestionCount($userTest, $currentQuestion);
+$totalTestQuestionCount = $tests->getQuestionCount($userTestId, $currentQuestion);
 
 // Get how many answers were correct
 $correctQuestionCount = $tests->getCorrectAnswerCount($userID);
 
 // Save final result to DB
-$tests->saveFinalResult($userID, $userTest, $correctQuestionCount);
+$tests->saveFinalResult($userID, $userTestId, $correctQuestionCount);
 
 // Destroy all session data
 session_destroy();

@@ -4,11 +4,13 @@ require_once './app/Controllers/TestController.php';
 require_once './app/Classes/Validator.php';
 
 session_start();
+// Addiitonal session security
+session_regenerate_id(true);
 
 // Session variables that need to be set for the user to be able to procceed
 $sessionVariables = [
     'username',
-    'user_test',
+    'user_test_id',
     'user_id',
     'current_question'
 ];
@@ -23,11 +25,11 @@ foreach ($sessionVariables as $variable) {
 
 $tests = new TestController;
 $userName = $_SESSION["username"];
-$userTest = (int)$_SESSION["user_test"];
+$userTestId = (int)$_SESSION["user_test_id"];
 $userID = (int)$_SESSION['user_id'];
 $currentQuestion = (int)$_SESSION['current_question'];
 
-$totalTestQuestionCount = $tests->getQuestionCount($userTest, $currentQuestion);
+$totalTestQuestionCount = $tests->getQuestionCount($userTestId, $currentQuestion);
 $showError = false;
 
 // This happens when procceeding to the next question
@@ -72,7 +74,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 // Fetch current question data from DB
-$questionData = $tests->getQuestionData($userTest, $currentQuestion);
+$questionData = $tests->getQuestionData($userTestId, $currentQuestion);
 
 // If no question data found redirect to index
 if (!$questionData) {

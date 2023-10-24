@@ -1,16 +1,29 @@
 <?php
 
 declare(strict_types=1);
+
 require_once './app/Models/Test.php';
+require_once './app/Classes/Validator.php';
+
+
+ini_set('display_errors', 1); 
+ini_set('display_startup_errors', 1); 
+error_reporting(E_ALL);
 
 /**
  * TestController class @author Roberts Ivanovs
  * Handles all actions related to the quiz
  */
 class TestController 
-{
+{    
+    /**
+     * __construct
+     *
+     * @return void
+     */
     public function __construct(
-        private $testModel = new Test()
+        private $testModel = new Test(),
+        private $validator = new Validator()
     ) {}
 
     /**
@@ -26,88 +39,103 @@ class TestController
     /**
      * Fetches current question and its answers from DB.
      *
-     * @param mixed $userTest
+     * @param mixed $userTestId
      * @param mixed $questionPosition
      * @return array
      */
-    public function getQuestionData(?int $userTest = null, ?int $questionPosition = null): array 
+    public function getQuestionData(?int $userTestId = null, ?int $questionPosition = null): array 
     {
-        // Validate if the values are integers, log the error if not
-        if (gettype($userTest) != "integer" || gettype($questionPosition) != "integer") {
+        // Validation
+        $this->validator->setField("User Test ID")->setValue($userTestId)->checkEmpty()->isInteger();
+        $this->validator->setField("Question Position")->setValue($questionPosition)->checkEmpty()->isInteger();
+
+        // Validate the values, log the error if not
+        if (!$this->validator->valid()) {
             error_log(
-                "Error in getQuestionData(): TestID or QuestionPos is not integer" . "\n", 3, 
+                "Error in getQuestionData(): " . $this->validator->getErrors() . "\n", 3, 
                 "error.log"
             );
+
             return [];
         }
 
-        return $this->testModel->getQuestionData($userTest, $questionPosition) ?: [];
+        return $this->testModel->getQuestionData($userTestId, $questionPosition) ?: [];
     }
 
     /**
      * Saves user provided answers to DB.
      *
-     * @param mixed $userID
-     * @param mixed $questionID
-     * @param mixed $answerID
+     * @param mixed $userId
+     * @param mixed $questionId
+     * @param mixed $answerId
      * @return int
      */
-    public function saveUserResponses(?int $userID = null, ?int $questionID = null, ?int $answerID = null): int 
+    public function saveUserResponses(?int $userId = null, ?int $questionId = null, ?int $answerId = null): int 
     {
-        // Validate if the values are integers, log the error if not
-        if (
-            gettype($userID) != "integer" || 
-            gettype($questionID) != "integer" ||
-            gettype($answerID) != "integer"
-        ) {
+        // Validation
+        $this->validator->setField("User ID")->setValue($userId)->checkEmpty()->isInteger();
+        $this->validator->setField("Question ID")->setValue($questionId)->checkEmpty()->isInteger();
+        $this->validator->setField("Answer ID")->setValue($answerId)->checkEmpty()->isInteger();
+
+        // Validate the values, log the error if not
+        if (!$this->validator->valid()) {
             error_log(
-                "Error in saveUserResponses(): UserID, QuestionID or AnswerID is not integer" . "\n", 3, 
+                "Error in saveUserResponses(): " . $this->validator->getErrors() . "\n", 3, 
                 "error.log"
             );
+
             return 0;
         }
 
-        return (int)$this->testModel->saveQuestionAnswer($userID, $questionID, $answerID);
+        return (int)$this->testModel->saveQuestionAnswer($userId, $questionId, $answerId);
     }
 
     /**
      * Returns total question count in the current test.
      *
-     * @param mixed $testID
+     * @param mixed $testId
      * @return int
      */
-    public function getQuestionCount(?int $testID = null): int 
-    {        
-        // Validate if the values are integers, log the error if not
-        if (gettype($testID) != "integer") {
+    public function getQuestionCount(?int $testId = null): int 
+    {
+        // Validation
+        $this->validator->setField("Quiz ID")->setValue($testId)->checkEmpty()->isInteger();
+        
+        // Validate the values, log the error if not
+        if (!$this->validator->valid()) {
             error_log(
-                "Error in getQuestionCount(): TestID is not integer" . "\n", 3, 
+                "Error in getQuestionCount(): " . $this->validator->getErrors() . "\n", 3, 
                 "error.log"
             );
+
             return 0;
         }
 
-        return (int)$this->testModel->getTestQuestionCount($testID);
+        return (int)$this->testModel->getTestQuestionCount($testId);
     }
 
     /**
      * Returns correct answer count for the current user.
      *
-     * @param mixed $userID
+     * @param mixed $userId
      * @return int
      */
-    public function getCorrectAnswerCount(?int $userID = null): int 
+    public function getCorrectAnswerCount(?int $userId = null): int 
     {
-        // Validate if the values are integers, log the error if not
-        if (gettype($userID) != "integer") {
+        // Validation
+        $this->validator->setField("User ID")->setValue($userId)->checkEmpty()->isInteger();
+        
+        // Validate the values, log the error if not
+        if (!$this->validator->valid()) {
             error_log(
-                "Error in getCorrectAnswerCount(): TestID is not integer" . "\n", 3, 
+                "Error in getCorrectAnswerCount(): " . $this->validator->getErrors() . "\n", 3, 
                 "error.log"
             );
+
             return 0;
         }
 
-        return (int)$this->testModel->getCorrectUserAnswers($userID);
+        return (int)$this->testModel->getCorrectUserAnswers($userId);
     }
     
     /**
@@ -115,27 +143,28 @@ class TestController
      * 
      * Saves the final test result to DB
      *
-     * @param mixed $userID
-     * @param mixed $testID
-     * @param mixed $correctAnswers
+     * @param mixed $userId
+     * @param mixed $testId
+     * @param mixed $correctAnswerCount
      * @return int
      */
-    public function saveFinalResult(?int $userID = null, ?int $testID = null, ?int $correctAnswers = null): int
+    public function saveFinalResult(?int $userId = null, ?int $testId = null, ?int $correctAnswerCount = null): int
     {
-        // Validate if the values are integers, log the error if not
-        if (
-            gettype($userID) != "integer" || 
-            gettype($testID) != "integer" ||
-            gettype($correctAnswers) != "integer"
-        ) {
+        // Validation
+        $this->validator->setField("User ID")->setValue($userId)->checkEmpty()->isInteger();
+        $this->validator->setField("Quiz ID")->setValue($testId)->checkEmpty()->isInteger();
+        $this->validator->setField("Correct answer count")->setValue($correctAnswerCount)->checkEmpty()->isInteger();
+
+        // Validate the values, log the error if not
+        if (!$this->validator->valid()) {
             error_log(
-                "Error in saveFinalResult(): UserID, testID or correctAnswers is not integer" . "\n", 3, 
+                "Error in saveFinalResult(): " . $this->validator->getErrors() . "\n", 3, 
                 "error.log"
             );
             return 0;
         }
 
-        return (int)$this->testModel->saveFinalResult($userID, $testID, $correctAnswers);
+        return (int)$this->testModel->saveFinalResult($userId, $testId, $correctAnswerCount);
 
     }
 }

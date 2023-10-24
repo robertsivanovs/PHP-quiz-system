@@ -6,14 +6,14 @@ require_once './app/Classes/Validator.php';
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Retrieve form data
     $username = trim($_POST["username"]);
-    $userTest = trim($_POST["test"]);
+    $userTestId = trim($_POST["test"]);
 
     // Initialize the validator class and perform validation
     $V1 = new Validator();
     // Validate username
     $V1->setField("Username")->setValue($username)->checkEmpty()->sanitizeUsername();
     // Validate Test ID
-    $V1->setField("Test ID")->setValue($userTest)->checkEmpty()->isInteger();
+    $V1->setField("Test ID")->setValue($userTestId)->checkEmpty()->isInteger();
 
     // If validation was unsuccessfult return to index and display validation errors
     if (!$V1->valid()) {
@@ -29,10 +29,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($result) {
         session_start();
+        // Addiitonal session security
+        session_regenerate_id(true);
 
         // Save session variables
         $_SESSION["username"] = $username;
-        $_SESSION["user_test"] = $userTest;
+        $_SESSION["user_test_id"] = $userTestId;
         $_SESSION['current_question'] = 1;
         $_SESSION['user_id'] = $result; // Result is user_id or 0
 

@@ -1,0 +1,3 @@
+Error in getQuestionData(): User Test ID cannot be empty!  User Test ID is not a valid integer!
+Error in getQuestionData(): User Test ID cannot be empty!  User Test ID is not a valid integer!
+Error in saveQuestionAnswer(): SQLSTATE[42S02]: Base table or view not found: 1146 Table 'php_quiz_new.results' doesn't exist
