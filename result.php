@@ -1,33 +1,23 @@
 <?php
 
 require_once './app/Controllers/TestController.php';
-session_start();
+require_once './app/Classes/SessionManager.php';
 
-// Addiitonal session security
-session_regenerate_id(true);
-
-// Session variables that have to be set by this point
-$sessionVariables = [
-    'username',
-    'user_test_id',
-    'user_id',
-    'current_question',
-    'test_finished'
-];
+// Start the session and set required data
+$sessionManager = new SessionManager();
 
 // Check if all session variables are set, redirect back to index if not
-foreach ($sessionVariables as $variable) {
-    if (!isset($_SESSION[$variable])) {
-        header("Location: index.php");
-        exit;
-    }
+if (!$sessionManager->checkSessionVariables() || !$sessionManager->getSessionVariable("test_finished")) {
+    header("Location: index.php");
+    exit;
 }
 
 $tests = new TestController;
-$currentQuestion = $_SESSION['current_question'];
-$userTestId = $_SESSION["user_test_id"];
-$username = $_SESSION["username"];
-$userID = $_SESSION["user_id"];
+
+$currentQuestion = $sessionManager->getSessionVariable("current_question");
+$userTestId = $sessionManager->getSessionVariable("user_test_id");
+$username = $sessionManager->getSessionVariable("username");
+$userID = $sessionManager->getSessionVariable("user_id");
 
 // Get total test question count
 $totalTestQuestionCount = $tests->getQuestionCount($userTestId, $currentQuestion);
@@ -39,7 +29,7 @@ $correctQuestionCount = $tests->getCorrectAnswerCount($userID);
 $tests->saveFinalResult($userID, $userTestId, $correctQuestionCount);
 
 // Destroy all session data
-session_destroy();
+$sessionManager->destroySession();
 ?>
 
 <!DOCTYPE html>

@@ -27,6 +27,16 @@ class SessionManager
     {
         session_start();
         session_regenerate_id(true); // For additional security
+        $this->configureSession();
+    }
+
+    private function configureSession(): void
+    {
+        // Configure your session settings here
+        ini_set('session.cookie_httponly', true);
+        ini_set('session.use_only_cookies', true);
+        ini_set('session.use_strict_mode', true);
+        // Add more session configuration options as needed
     }
     
     /**

@@ -43,7 +43,7 @@ class Database
             $this->con->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
         } catch (PDOException $e) {
             // Return the PDO exception message if the connection fails.
-            throw $e;
+            echo "Database connection failed: " . $e->getMessage();
         }
     }
 }
