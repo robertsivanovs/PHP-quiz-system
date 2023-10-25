@@ -2,33 +2,26 @@
 
 require_once './app/Controllers/TestController.php';
 require_once './app/Classes/Validator.php';
+require_once './app/Classes/SessionManager.php';
 
-session_start();
-// Addiitonal session security
-session_regenerate_id(true);
-
-// Session variables that need to be set for the user to be able to procceed
-$sessionVariables = [
-    'username',
-    'user_test_id',
-    'user_id',
-    'current_question'
-];
+// Start the session and set required data
+$sessionManager = new SessionManager();
 
 // Check if all session variables are set, redirect back to index if not
-foreach ($sessionVariables as $variable) {
-    if (!isset($_SESSION[$variable])) {
-        header("Location: index.php");
-        exit;
-    }
+if (!$sessionManager->checkSessionVariables()) {
+    header("Location: index.php");
+    exit;
 }
 
 $tests = new TestController;
-$userName = $_SESSION["username"];
-$userTestId = (int)$_SESSION["user_test_id"];
-$userID = (int)$_SESSION['user_id'];
-$currentQuestion = (int)$_SESSION['current_question'];
 
+// Fetch session variables
+$userName = $sessionManager->getSessionVariable("username");
+$userTestId = (int)$sessionManager->getSessionVariable("user_test_id");
+$userID = (int)$sessionManager->getSessionVariable("user_id");
+$currentQuestion = (int)$sessionManager->getSessionVariable("current_question");
+
+// Fetch total question count within the current quiz
 $totalTestQuestionCount = $tests->getQuestionCount($userTestId, $currentQuestion);
 $showError = false;
 
@@ -36,7 +29,7 @@ $showError = false;
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['answer'])) {
         // Save user responses to each question in DB
-        $questionID = $_SESSION['question_id'];
+        $questionID = $sessionManager->getSessionVariable("question_id");
         $answerID = $_POST['answer'];
         // Initialize the validator class and perform validation
         $V1 = new Validator();
@@ -50,16 +43,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             exit;
         }
 
+        // Save user response to each question in DB
         $result = $tests->saveUserResponses($userID, $questionID, $answerID);
 
         // Continue to next question after saving data to DB
         if ($result) {
             $currentQuestion++;
-            $_SESSION['current_question'] = $currentQuestion;
+            $sessionManager->setSessionVariable(["current_question" => $currentQuestion]);
 
             // User has responded to all questions, redirect to results page
             if ($currentQuestion > $totalTestQuestionCount) {
-                $_SESSION['test_finished'] = 1;
+                $sessionManager->setSessionVariable(["test_finished" => 1]);
                 header("Location: result.php");
                 exit;
             }
@@ -83,7 +77,7 @@ if (!$questionData) {
 }
 
 // Store question ID data in session variable
-$_SESSION["question_id"] = $questionData['question_id'];
+$sessionManager->setSessionVariable(["question_id" => $questionData['question_id']]);
 
 // Set Question title
 $questionTitle = $questionData['question_text'];
@@ -95,7 +89,7 @@ $questionTitle = $questionData['question_text'];
 <head>
     <meta charset="UTF-8">
     <title>Question Form</title>
-    <link rel="stylesheet" type="text/css" href="./style/style.css">
+    <link rel="stylesheet" type="text/css" href="./public/css/styles.css">
 </head>
 <body>
     <?php if ($showError): ?>

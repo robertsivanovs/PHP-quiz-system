@@ -47,7 +47,7 @@ session_destroy();
 <head>
     <meta charset="UTF-8">
     <title>Results</title>
-    <link rel="stylesheet" type="text/css" href="./style/style.css">
+    <link rel="stylesheet" type="text/css" href="./public/css/styles.css">
 </head>
 <body>
     <div class="container">

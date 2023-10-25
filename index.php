@@ -10,7 +10,7 @@ $testList = $tests->getTestList();
 <html>
 <head>
     <title>Quiz system</title>
-    <link rel="stylesheet" type="text/css" href="./style/style.css">
+    <link rel="stylesheet" type="text/css" href="./public/css/styles.css">
 </head>
 <body class="quiz">
     <h1>Hey! Please input your name and select a test:</h1>

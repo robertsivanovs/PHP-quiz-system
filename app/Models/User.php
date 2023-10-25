@@ -1,8 +1,9 @@
 <?php
 
 declare(strict_types=1);
-use app\Classes\Database;
+
 require_once './app/Classes/Database.php';
+use app\Classes\Database;
 
 /**
  * User model @author Roberts Ivanovs

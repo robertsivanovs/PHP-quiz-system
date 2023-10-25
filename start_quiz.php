@@ -2,6 +2,7 @@
 
 require_once './app/Controllers/UserController.php';
 require_once './app/Classes/Validator.php';
+require_once './app/Classes/SessionManager.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Retrieve form data
@@ -17,7 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // If validation was unsuccessfult return to index and display validation errors
     if (!$V1->valid()) {
-        error_log("Error when validating user input getTests(): " . $V1->getErrors(), 3, "error.log");
+        error_log("Error when validating user input getTests(): " . $V1->getErrors() . "\n", 3, "error.log");
         header("Location: index.php");
         exit;
     }
@@ -28,17 +29,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $result = $user->processUserData($username);
 
     if ($result) {
-        session_start();
-        // Addiitonal session security
-        session_regenerate_id(true);
+        // Start the session and set required data
+        $sessionManager = new SessionManager();
+        $sessionManager->setSessionVariable([
+            "username" => $username,
+            "user_test_id" => $userTestId,
+            "current_question" => 1,
+            "user_id" => $result
+        ]);
 
-        // Save session variables
-        $_SESSION["username"] = $username;
-        $_SESSION["user_test_id"] = $userTestId;
-        $_SESSION['current_question'] = 1;
-        $_SESSION['user_id'] = $result; // Result is user_id or 0
-
-        // Lets start the test
+        // Lets start the test shall we?
         header("Location: quiz.php");
         exit;
     } else {

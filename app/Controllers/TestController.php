@@ -5,11 +5,6 @@ declare(strict_types=1);
 require_once './app/Models/Test.php';
 require_once './app/Classes/Validator.php';
 
-
-ini_set('display_errors', 1); 
-ini_set('display_startup_errors', 1); 
-error_reporting(E_ALL);
-
 /**
  * TestController class @author Roberts Ivanovs
  * Handles all actions related to the quiz
