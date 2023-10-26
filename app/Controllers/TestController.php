@@ -1,9 +1,13 @@
 <?php
 
 declare(strict_types=1);
+namespace app\Controllers;
 
 require_once './app/Models/Test.php';
 require_once './app/Classes/Validator.php';
+
+use app\Classes\Validator;
+use app\Models\Test;
 
 /**
  * TestController class @author Roberts Ivanovs

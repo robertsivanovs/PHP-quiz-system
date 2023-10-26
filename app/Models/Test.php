@@ -1,8 +1,9 @@
 <?php
 
 declare(strict_types=1);
-require_once './app/Classes/Database.php';
+namespace app\Models;
 
+require_once './app/Classes/Database.php';
 use app\Classes\Database;
 
 /**
@@ -34,7 +35,7 @@ class Test extends Database
 
             return $result;
 
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             // Log the error
             error_log("Error in getTests(): " . $e->getMessage(), 3, "error.log");
             return [];
@@ -69,7 +70,7 @@ class Test extends Database
                 ':position' => $questionPosition,
             ]);
 
-            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
                 if (empty($questionData)) {
                     $questionData = [
                         'question_text' => $row['question_text'],
@@ -83,7 +84,7 @@ class Test extends Database
                     'is_correct' => $row['is_correct']
                 ];
             }
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             error_log("Error in getQuestionData(): " . $e->getMessage(), 3, "error.log");
             return [];
         }
@@ -118,7 +119,7 @@ class Test extends Database
             } else {
                 return 0; // Failed to insert the user
             }
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             // Log the error
             error_log("Error in saveQuestionAnswer(): " . $e->getMessage(), 3, "error.log");
             return 0;
@@ -144,7 +145,7 @@ class Test extends Database
             // Fetch the result and return it
             return $stmt->fetchColumn();
 
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             // Log the error
             error_log("Error in getTestQuestionCount(): " . $e->getMessage(), 3, "error.log");
             return 0;
@@ -177,7 +178,7 @@ class Test extends Database
             // Fetch the result and return it
             return (int)$stmt->fetchColumn();
 
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             // Log the error
             error_log("Error in getCorrectUserAnswers(): " . $e->getMessage(), 3, "error.log");
             return 0;
@@ -211,7 +212,7 @@ class Test extends Database
                 return (int)$this->con->lastInsertId();
             }
             
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             // Log the error
             error_log("Error in saveQuestionAnswer(): " . $e->getMessage(), 3, "error.log");
             return 0;

@@ -1,6 +1,7 @@
 <?php
 
 require_once './app/Controllers/TestController.php';
+use app\Controllers\TestController;
 
 $tests = new TestController;
 $testList = $tests->getTestList();
