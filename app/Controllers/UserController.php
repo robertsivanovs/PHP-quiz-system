@@ -1,7 +1,10 @@
 <?php
 
 declare(strict_types=1);
+namespace app\Controllers;
+
 require_once './app/Models/User.php';
+use app\Models\User;
 
 /**
  * UserController class @author Roberts Ivanovs

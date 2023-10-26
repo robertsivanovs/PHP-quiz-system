@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+namespace app\Models;
 
 require_once './app/Classes/Database.php';
 use app\Classes\Database;
@@ -32,7 +33,7 @@ class User extends Database
             } else {
                 return 0; // Failed to insert the user
             }
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             // Log the error
             error_log("Error in createUser(): " . $e->getMessage(), 3, "error.log");
             return 0;

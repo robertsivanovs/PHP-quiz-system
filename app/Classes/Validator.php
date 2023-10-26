@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+namespace app\Classes;
 
 /**
  * Validator class @author Roberts Ivanovs

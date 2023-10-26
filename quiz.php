@@ -4,6 +4,10 @@ require_once './app/Controllers/TestController.php';
 require_once './app/Classes/Validator.php';
 require_once './app/Classes/SessionManager.php';
 
+use app\Classes\Validator;
+use app\Classes\SessionManager;
+use app\Controllers\TestController;
+
 // Start the session and set required data
 $sessionManager = new SessionManager();
 
